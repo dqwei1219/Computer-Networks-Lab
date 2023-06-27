@@ -6,10 +6,9 @@ using namespace std;
 
 ByteStream::ByteStream( uint64_t capacity ) : capacity_( capacity ) {}
 
-void Writer::push( string data )
+void Writer::push( const string& data )
 {
-  // Your code here.
-  (void)data;
+  uint16_t size = available_capacity();
 }
 
 void Writer::close()
