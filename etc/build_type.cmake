@@ -1,11 +1,8 @@
-set(default_build_type "Debug")
+set (CMAKE_CXX_STANDARD 20)
+set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-if (NOT (CMAKE_BUILD_TYPE_SHADOW STREQUAL CMAKE_BUILD_TYPE))
-    if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-        message (STATUS "Setting build type to '${default_build_type}'")
-        set (CMAKE_BUILD_TYPE "${default_build_type}" CACHE STRING "Choose the type of build." FORCE)
-    endif ()
-    set (CMAKE_BUILD_TYPE_SHADOW ${CMAKE_BUILD_TYPE} CACHE STRING "used to detect changes in build type" FORCE)
-endif ()
+set(SANITIZING_FLAGS -fno-sanitize-recover=all -fsanitize=undefined -fsanitize=address)
 
-message (STATUS "Building in '${CMAKE_BUILD_TYPE}' mode.")
+# ask for more warnings from the compiler
+set (CMAKE_BASE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wpedantic -Wextra -Weffc++ -Werror -Wshadow -Wpointer-arith -Wcast-qual -Wformat=2 -Wno-unqualified-std-cast-call")
