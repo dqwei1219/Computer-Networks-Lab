@@ -8,69 +8,80 @@ ByteStream::ByteStream( uint64_t capacity ) : capacity_( capacity ) {}
 
 void Writer::push( const string& data )
 {
-  uint16_t size = available_capacity();
+  if ( is_closed() || error_ || data.empty() ) {
+    return;
+  }
+
+  if ( data.length() > available_capacity() ) {
+    queue_.append( data.substr( 0, available_capacity() ) );
+    tot_len_ += available_capacity();
+  } else {
+    queue_.append( data );
+    tot_len_ += data.length();
+  }
 }
 
 void Writer::close()
 {
-  // Your code here.
+  this->closed_ = true;
 }
 
 void Writer::set_error()
 {
-  // Your code here.
+  this->error_ = true;
 }
 
 bool Writer::is_closed() const
 {
-  // Your code here.
-  return {};
+  return this->closed_;
 }
 
 uint64_t Writer::available_capacity() const
 {
-  // Your code here.
-  return {};
+  return capacity_ - tot_len_ + out_len_;
 }
 
 uint64_t Writer::bytes_pushed() const
 {
-  // Your code here.
-  return {};
+  return tot_len_;
 }
 
 string_view Reader::peek() const
 {
-  // Your code here.
-  return {};
+  return std::string_view( queue_ );
 }
 
 bool Reader::is_finished() const
 {
   // Your code here.
-  return {};
+  return { closed_ && queue_.empty() };
 }
 
 bool Reader::has_error() const
 {
   // Your code here.
-  return {};
+  return error_;
 }
 
 void Reader::pop( uint64_t len )
 {
   // Your code here.
-  (void)len;
+  if ( error_ || queue_.empty() ) {
+    return;
+  }
+
+  queue_ = queue_.substr( len, queue_.length() );
+  out_len_ += len;
 }
 
 uint64_t Reader::bytes_buffered() const
 {
   // Your code here.
-  return {};
+  return tot_len_ - out_len_;
 }
 
 uint64_t Reader::bytes_popped() const
 {
   // Your code here.
-  return {};
+  return out_len_;
 }

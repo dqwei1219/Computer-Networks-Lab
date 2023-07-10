@@ -1,11 +1,18 @@
 #pragma once
 
 #include "byte_stream.hh"
-
+#include <map>
 #include <string>
 
 class Reassembler
 {
+private:
+  uint64_t unassembled_index_ { 0 };
+  uint64_t unassembled_bytes_ { 0 };
+  std::map<uint64_t, std::string> unassembled_substrings_ {};
+  bool closed_ { false };
+  bool is_closed() const;
+
 public:
   /*
    * Insert a new substring to be reassembled into a ByteStream.
