@@ -3,11 +3,30 @@
 #include "byte_stream.hh"
 #include "tcp_receiver_message.hh"
 #include "tcp_sender_message.hh"
+#include <map>
+#include <queue>
 
 class TCPSender
 {
   Wrap32 isn_;
   uint64_t initial_RTO_ms_;
+  uint64_t RTO_timeout_ {0};
+  uint64_t timer_ {0}; // retransmission timer
+
+  bool set_syn_ {false};
+  bool set_fin_ {false};
+
+  uint64_t next_abs_seqno_ {0};
+
+  uint64_t window_size_ {1};
+  uint64_t outstanding_seqno_ {0};
+  std::map<uint64_t /* abs_seqno */, TCPSenderMessage> outstanding_seg_ {};
+  std::queue<TCPSenderMessage> segments_out_ {};
+
+  uint64_t consecutive_retransmission_times_ {0};
+
+  uint64_t get_next_abs_seqno_() const { return next_abs_seqno_; };
+  Wrap32 get_next_seqno() const { return isn_ + next_abs_seqno_; };
 
 public:
   /* Construct TCP sender with given default Retransmission Timeout and possible ISN */

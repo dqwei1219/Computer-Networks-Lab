@@ -17,6 +17,6 @@ public:
   TCPReceiverMessage send( const Writer& inbound_stream ) const;
 
 private:
-  bool set_syn_ {false};
-  Wrap32 isn_{0};
+  bool set_syn_ { false };
+  Wrap32 isn_ { 0 };
 };

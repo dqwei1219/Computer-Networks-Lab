@@ -12,20 +12,23 @@ TCPSender::TCPSender( uint64_t initial_RTO_ms, optional<Wrap32> fixed_isn )
 
 uint64_t TCPSender::sequence_numbers_in_flight() const
 {
-  // Your code here.
-  return {};
+  return outstanding_seqno_;
 }
 
 uint64_t TCPSender::consecutive_retransmissions() const
 {
-  // Your code here.
-  return {};
+  return consecutive_retransmission_times_;
 }
 
 optional<TCPSenderMessage> TCPSender::maybe_send()
 {
-  // Your code here.
-  return {};
+  if (set_syn_ && !segments_out_.empty()) {
+    TCPSenderMessage msg = std::move(segments_out_.front());
+    segments_out_.pop();
+    return msg;
+  }
+
+  return nullopt;
 }
 
 void TCPSender::push( Reader& outbound_stream )
