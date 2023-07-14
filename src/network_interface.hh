@@ -41,6 +41,22 @@ private:
   // IP (known as Internet-layer or network-layer) address of the interface
   Address ip_address_;
 
+  // outbound Ethernet frames which will be sent by the Network Interface
+  std::queue<EthernetFrame> outbound_frames_ {};
+
+  // ARP will be stored for 30s at most, which can reduce the length of ARP table,
+  // increasing the enquiry speed.
+  const size_t ARP_DEFAULT_TTL = static_cast<size_t>( 30 * 1000 );
+  const size_t ARP_REQUEST_DEFAULT_TTL = static_cast<size_t>( 5 * 1000 );
+  using arp_t = struct
+  {
+    EthernetAddress eth_addr; // mac address
+    size_t ttl;               // time to live
+  };
+  std::unordered_map<uint32_t /* ipv4 numeric */, arp_t> arp_table_ {};
+  std::unordered_map<uint32_t /* ipv4 numeric */, size_t /* ttl */> arp_requests_lifetime_ {};
+  std::list<std::pair<Address, InternetDatagram>> arp_datagrams_waiting_list_ {};
+
 public:
   // Construct a network interface with given Ethernet (network-access-layer) and IP (internet-layer)
   // addresses
