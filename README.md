@@ -1,6 +1,10 @@
 Stanford CS 144 Networking Lab
 ==============================
-This is my personal projects for learning purposes
+# This is my personal projects for learning purposes
+# This project is following the blog and code by HangX-Ma, and code by owenramber1989.
+
+
+
 
 To set up the build system: `cmake -S . -B build`
 
